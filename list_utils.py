@@ -20,13 +20,6 @@ __doc__ = "\n-------------------------------------------------------------------
           "norm_cols_all_ls.\n\n" \
           "See the doc strings for individual functions for further information.\n" \
           "-------------------------------------------------------------------------\n"
-__author__ = "Cameron Faxon"
-__copyright__ = "Copyright (C) 2016 Cameron Faxon. Distributable under GNU GPLv3"
-__license__ = "GNU GPLv3"
-__version__ = "1.0"
-
-# TODO: order functions such that similar functions are grouped in sequence (e.g., time series, col mod,
-# todo: averaging, etc.
 
 
 def create_df_ls(flist=[""], indir=""):

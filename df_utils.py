@@ -14,10 +14,6 @@ __doc__ = "\n-------------------------------------------------------------------
           "top_series_quantile, norm_cols_each, norm_cols_all.\n\n" \
           "See doc strings of the individual functions for further information.\n" \
           "-------------------------------------------------------------------------\n"
-__author__ = "Cameron Faxon"
-__copyright__ = "Copyright (C) 2016 Cameron Faxon. Distributable under GNU GPLv3"
-__license__ = "GNU GPLv3"
-__version__ = "1.0"
 
 
 def idx0(df):

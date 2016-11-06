@@ -47,7 +47,7 @@ __doc__ = "Package: df_tools v1.0\n" \
           "lists. Functions for single DataFrames are in df_tools.df_utils, those for lists of DataFrames are in  \n" \
           "df_tools.list_utils and error checking functions are in df_tools.err_check. \n"
 __author__ = "Cameron Faxon"
-__copyright__ = "Copyright (C) 2016 Cameron Faxon. Distributable under GNU GPLv3"
+__copyright__ = "Copyright (C) 2016 Cameron Faxon"
 __license__ = "GNU GPLv3"
 __version__ = "1.0"
 __all__ = ["create_df_ls", "idx0_ls", "drop_cols_df_ls", "norm_by_factors", "df_col_avg_sum", "find_min_rows",

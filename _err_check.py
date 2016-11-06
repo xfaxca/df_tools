@@ -15,10 +15,6 @@ __doc__ = "\n-------------------------------------------------------------------
           "parent_fn_mod_2step, parent_fn_mod_3step.\n\n" \
           "Please see the doc strings of individual functions for further information.\n" \
           "-------------------------------------------------------------------------\n"
-__author__ = "Cameron Faxon"
-__copyright__ = "Copyright (C) 2016 Cameron Faxon. Distributable under GNU GPLv3"
-__license__ = "GNU GPLv3"
-__version__ = "1.0"
 
 
 def check_ls(ls):
