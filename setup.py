@@ -8,6 +8,6 @@ setup(name='df_tools',
       author='Cameron Faxon',
       license='GNU GPLv3',
       author_email='cameron@tutanota.com',
-      url='https://github.com/gnomeone/df_tools',
+      url='https://github.com/xfaxca/df_tools',
       packages=['df_tools'],
       requires=['pandas', 'numpy', 'pathlib2'])
