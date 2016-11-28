@@ -42,7 +42,7 @@ from df_tools.list_utils import concat_trans_ls
 # Documentation, version #, etc.
 __doc__ = "Package: df_tools v1.0\n" \
           "Created: 09/20/2016\n" \
-          "Author contact: gnomeslice@tutanota.com \n" \
+          "Author contact: cameron@tutanota.com \n" \
           "Description: A package for manipulation and modification of pandas DataFrames, both single objects and \n" \
           "lists. Functions for single DataFrames are in df_tools.df_utils, those for lists of DataFrames are in  \n" \
           "df_tools.list_utils and error checking functions are in df_tools.err_check. \n"
