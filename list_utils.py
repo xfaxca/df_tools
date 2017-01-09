@@ -4,6 +4,7 @@
 # Module import
 from df_tools.df_utils import *
 import df_tools._err_check as ec
+import sys
 import pandas as pd
 from pathlib import Path
 
