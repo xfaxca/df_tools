@@ -1,26 +1,43 @@
 # list_utils.py
-# TODO #2: Organize functions in a manner that groups them appropriately
 
-# Module import
+"""
+This module provides functions for handling lists of pandas DataFrames.
+Examples include: normalization of columns, dropping of specific columns
+truncation of DataFrames to a maximum length, re-indexing, and pairwise
+concatenation of DataFrame lists. For functions handling single DataFrames
+please use df_utils.
+
+Functions:
+create_df_ls, idx0_ls, drop_cols_df_ls, norm_by_factors, df_col_avg_sum
+find_min_rows, truncate_dfs, dropna_df_ls, set_indices_ls, top_series_mean_ls
+top_series_max_ls, top_series_quantile_ls, concat_ls, norm_cols_each_ls
+norm_cols_all_ls.
+
+See the doc strings for individual functions for further information.
+"""
+
 from df_tools.df_utils import *
-import df_tools._err_check as ec
+import df_tools._err_check as _ec
 import sys
 import pandas as pd
 from pathlib import Path
 
-__doc__ = "\n-------------------------------------------------------------------------\n" \
-          "This module provides functions for handling lists of pandas DataFrames.\n" \
-          "Examples include: normalization of columns, dropping of specific columns,\n" \
-          "truncation of DataFrames to a maximum length, re-indexing, and pairwise \n" \
-          "concatenation of DataFrame lists. For functions handling single DataFrames,\n" \
-          "please use df_utils.\n" \
-          "\nFunctions:\n" \
-          "create_df_ls, idx0_ls, drop_cols_df_ls, norm_by_factors, df_col_avg_sum,\n" \
-          "find_min_rows, truncate_dfs, dropna_df_ls, set_indices_ls, top_series_mean_ls,\n" \
-          "top_series_max_ls, top_series_quantile_ls, concat_ls, norm_cols_each_ls,\n" \
-          "norm_cols_all_ls.\n\n" \
-          "See the doc strings for individual functions for further information.\n" \
-          "-------------------------------------------------------------------------\n"
+__all__ = ['create_df_ls',
+           'idx0_ls',
+           'drop_cols_df_ls',
+           'norm_by_factors',
+           'df_col_avg_sum',
+           'find_min_rows',
+           'truncate_dfs',
+           'dropna_df_ls',
+           'set_indices_ls',
+           'top_series_mean_ls',
+           'top_series_max_ls',
+           'top_series_quantile_ls',
+           'concat_ls',
+           'concat_trans_ls',
+           'norm_cols_each_ls',
+           'norm_cols_all_ls']
 
 
 def create_df_ls(flist=[""], indir=""):
@@ -37,9 +54,9 @@ def create_df_ls(flist=[""], indir=""):
     :return: df_ls: A list of pandas DataFrames loaded from the csvs specified in flist.
     """
     # Check passed parameter values to prevent error in future.
-    ec.check_ls(ls=flist)
-    ec.check_string(values=flist)
-    ec.check_string(values=[indir])
+    _ec.check_ls(ls=flist)
+    _ec.check_string(values=flist)
+    _ec.check_string(values=[indir])
 
     df_ls = []
     for f in flist:
@@ -67,12 +84,12 @@ def idx0_ls(df_ls):
     :return: df_t0_ls: A list of pandas DataFrames with offset indices.
     """
     # Check to make sure index values are numeric and in a pandas DataFrame.
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
-    
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
+
     df_idx0_ls = []
     for df in df_ls:
-        ec.check_numeric(values=df.index.values)
+        _ec.check_numeric(values=df.index.values)
         df_idx0 = df.copy()
         df_idx0.index = (df.index.values - df.index.values[0])
         df_idx0_ls.append(df_idx0)
@@ -95,10 +112,10 @@ def drop_cols_df_ls(df_ls, cols2drop=['none'], inplace=True):
     :return: nothing
     """
     # Check data types to prevent errors in column dropping loop.
-    ec.check_ls(ls=df_ls)
-    ec.check_ls(ls=cols2drop)
-    ec.check_dfs(values=df_ls)
-    ec.check_string(values=cols2drop)
+    _ec.check_ls(ls=df_ls)
+    _ec.check_ls(ls=cols2drop)
+    _ec.check_dfs(values=df_ls)
+    _ec.check_string(values=cols2drop)
 
     if not inplace:
         df_dropped_ls = []
@@ -129,7 +146,7 @@ def norm_by_factors(df_ls, factor_ls=[0.0]):
     """
     This function takes in a list of pandas DataFrames and normalizes each column by a list of normalization factors.
         The list of factors and DataFrames must be of equal length. Otherwise, an error is returned using the external
-        function ec.check_eq_ls_len, which is called from _err_check.py. The normalization factors should be paired to the
+        function _ec.check_eq_ls_len, which is called from _err_check.py. The normalization factors should be paired to the
         same indices as the DataFrames you wish to be normalized by each factor. For example, it will normalize
         df_ls[0] by factor_ls[0], ... df_ls[n] by factor_ls[n].
     Parameters:
@@ -140,11 +157,11 @@ def norm_by_factors(df_ls, factor_ls=[0.0]):
         over-written by the returned list in the script from which this function is called.
     """
     # Check for equal length of passed lists and data types to prevent error in normalization loop.
-    ec.check_ls(ls=df_ls)
-    ec.check_ls(ls=factor_ls)
-    ec.check_eq_ls_len(list_ls=[df_ls, factor_ls])
-    ec.check_dfs(values=df_ls)
-    ec.check_numeric(values=factor_ls)
+    _ec.check_ls(ls=df_ls)
+    _ec.check_ls(ls=factor_ls)
+    _ec.check_eq_ls_len(list_ls=[df_ls, factor_ls])
+    _ec.check_dfs(values=df_ls)
+    _ec.check_numeric(values=factor_ls)
 
     df_ls_out = df_ls.copy()
     for df_in, factor, df_out, df_num in zip(df_ls, factor_ls, df_ls_out, range(len(df_ls))):
@@ -167,11 +184,11 @@ def df_col_avg_sum(df_ls, df_name_ls=[]):
         each DataFrame
     """
     # Check for equal length of DataFrame list and factor list to prevent error in averaging/summing loop
-    ec.check_ls(ls=df_ls)
-    ec.check_ls(ls=df_name_ls)
-    ec.check_eq_ls_len(list_ls=[df_ls, df_name_ls])
-    ec.check_dfs(values=df_ls)
-    ec.check_string(values=df_name_ls)
+    _ec.check_ls(ls=df_ls)
+    _ec.check_ls(ls=df_name_ls)
+    _ec.check_eq_ls_len(list_ls=[df_ls, df_name_ls])
+    _ec.check_dfs(values=df_ls)
+    _ec.check_string(values=df_name_ls)
 
     avgsums = []
     for df, df_name, df_num in zip(df_ls, df_name_ls, range(len(df_ls))):
@@ -194,9 +211,9 @@ def find_min_rows(df_ls, max_len=99999999999):
         returned min_rows = max_len
     :return: nrows_min: The number of rows in the DataFrame with the smallest number of rows.
     """
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
-    ec.check_int(values=[max_len])
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
+    _ec.check_int(values=[max_len])
 
     nrows_min = max_len
     for df in df_ls:
@@ -218,9 +235,9 @@ def truncate_dfs(df_ls, min_rows=1000):
     :return: Nothing. The original DataFrames are modified in-place.
     """
     # Check that data types are those expected.
-    ec.check_ls(ls=df_ls)
-    ec.check_int(values=[min_rows])
-    ec.check_dfs(values=df_ls)
+    _ec.check_ls(ls=df_ls)
+    _ec.check_int(values=[min_rows])
+    _ec.check_dfs(values=df_ls)
 
     for df in df_ls:
         cut = df.shape[0] - min_rows
@@ -242,19 +259,19 @@ def dropna_df_ls(df_ls, axis=0, rm_method='any', inplace=True):
     :param axis: axis along which to search for nans. Corresponds to the value used for the 'axis' keyword in
         the pandas DataFrame.dropna().
     :param rm_method: Corresponds to the value for the keyword 'how' in the pandas DataFrame.dropna().
-    :param inplace: A choice whether to drop nans in place or to return a copy of the list of DataFrames with the 
+    :param inplace: A choice whether to drop nans in place or to return a copy of the list of DataFrames with the
         nans removed as specified by axis and rm_method.
     :return: If inplace == True, DataFrames are modified in place, and nothing is returned. Otherwie, df_no_nan_ls
         is returned, which is a list of the DataFrames with nans removed as specified by axis and rm_method parameters.
     """
     # Check to verify parameter inputs are correct types to avoid pandas errors downstream
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
-    ec.check_bool(values=[inplace])
-    ec.param_exists_in_set(value=axis, val_set=[0, 1])
-    ec.param_exists_in_set(value=rm_method, val_set=['any', 'all'])
-    ec.param_exists_in_set(value=inplace, val_set=[True, False])
-    
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
+    _ec.check_bool(values=[inplace])
+    _ec.param_exists_in_set(value=axis, val_set=[0, 1])
+    _ec.param_exists_in_set(value=rm_method, val_set=['any', 'all'])
+    _ec.param_exists_in_set(value=inplace, val_set=[True, False])
+
     df_no_nan_ls = []
     for df in df_ls:
         print('shape before dropna:', df.shape)
@@ -283,9 +300,9 @@ def set_indices_ls(df_ls, index_name=''):
     """
     # TODO: test the functionality of this function.
     # Input type checking to prevent errors during index setting.
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
-    ec.check_string(values=[index_name])
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
+    _ec.check_string(values=[index_name])
 
     for df, df_num in zip(df_ls, range(0, len(df_ls))):
         if index_name in df.columns:
@@ -317,9 +334,9 @@ def top_series_mean_ls(df_ls, n_series=10):
     """
     print("Picking the top %i time series by mean column values for %i DataFrames" % (n_series, len(df_ls)))
     # Check input types to prevent errors in subsequent loops.
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
-    ec.check_int(values=[n_series])
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
+    _ec.check_int(values=[n_series])
 
     # Create list of indices (columns) that contain the n_series highest average values in order
     # to later make the returned df_top DataFrame.
@@ -360,9 +377,9 @@ def top_series_max_ls(df_ls, n_series=10):
     """
     print("Picking the top %i time series by maximum column values for %i DataFrames" % (n_series, len(df_ls)))
     # Check input types to prevent errors in subsequent loops.
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
-    ec.check_int(values=[n_series])
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
+    _ec.check_int(values=[n_series])
 
     # Create list of indices (columns) that contain the n_series highest average values in order
     # to later make the returned df_top DataFrame.
@@ -399,11 +416,11 @@ def top_series_quantile_ls(df_ls, quant=0.75):
         those columns whose values are above the [quant] percentile.
     """
     # Check data types to prevent errors during quantile selection
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
-    ec.check_numeric(values=[quant])
-    ec.check_threshold(values=[quant], thresh=1.0, how='under')
-    
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
+    _ec.check_numeric(values=[quant])
+    _ec.check_threshold(values=[quant], thresh=1.0, how='under')
+
     # Create list to put the quantile/percentile DataFrames into
     df_percentile_ls = []
     for df_idx in range(0, len(df_ls)):
@@ -434,16 +451,16 @@ def concat_ls(df_ls1, df_ls2, axis=0, join='inner'):
         DataFrame from list 2
     """
     # Check data types to prevent errors during processing.
-    ec.check_ls(ls=df_ls1)
-    ec.check_ls(ls=df_ls2)
-    ec.check_dfs(values=df_ls1)
-    ec.check_dfs(values=df_ls2)
-    ec.check_eq_ls_len(list_ls=[df_ls1, df_ls2])
-    ec.check_numeric(values=[axis])
-    ec.param_exists_in_set(value=axis, val_set=[0, 1])
-    ec.check_string(values=[join])
-    ec.param_exists_in_set(value=join, val_set=['inner', 'outer'])
-    
+    _ec.check_ls(ls=df_ls1)
+    _ec.check_ls(ls=df_ls2)
+    _ec.check_dfs(values=df_ls1)
+    _ec.check_dfs(values=df_ls2)
+    _ec.check_eq_ls_len(list_ls=[df_ls1, df_ls2])
+    _ec.check_numeric(values=[axis])
+    _ec.param_exists_in_set(value=axis, val_set=[0, 1])
+    _ec.check_string(values=[join])
+    _ec.param_exists_in_set(value=join, val_set=['inner', 'outer'])
+
     # Initialize return list for concatenated DataFrames
     df_ls_concat = []
     # Check row or column lengths of lists to make sure they're the same.  If not, tell user, but try to proceed.
@@ -499,16 +516,16 @@ def concat_trans_ls(df_ls1, df_ls2, axis=0, join='inner', pad=True, rep_colnames
      from list 1
     """
     # Check parameter data types, list lengths, and values to prevent errors during processing
-    ec.check_ls(ls=df_ls1)
-    ec.check_ls(ls=df_ls2)
-    ec.check_dfs(values=df_ls1)                    # DataFrame lists
-    ec.check_dfs(values=df_ls2)
-    ec.check_eq_ls_len(list_ls=[df_ls1, df_ls2])
-    ec.check_numeric(values=[axis])                # axis
-    ec.param_exists_in_set(value=axis, val_set=[0, 1])
-    ec.check_bool(values=[pad])
-    ec.check_bool(values=[rep_colnames])
-    ec.check_string(values=[pad_name])
+    _ec.check_ls(ls=df_ls1)
+    _ec.check_ls(ls=df_ls2)
+    _ec.check_dfs(values=df_ls1)                    # DataFrame lists
+    _ec.check_dfs(values=df_ls2)
+    _ec.check_eq_ls_len(list_ls=[df_ls1, df_ls2])
+    _ec.check_numeric(values=[axis])                # axis
+    _ec.param_exists_in_set(value=axis, val_set=[0, 1])
+    _ec.check_bool(values=[pad])
+    _ec.check_bool(values=[rep_colnames])
+    _ec.check_string(values=[pad_name])
 
     # Initialize internal function variables and return list
     df_concat_ls = []
@@ -553,12 +570,12 @@ def norm_cols_each_ls(df_ls):
 
     Parameters:
     :param df_ls: A list of pandas DataFrames containing the columns to be normalized.
-    :return: df_norm_ls: A list of new DataFrames with each column normalized to its maximum value. Values will be 
+    :return: df_norm_ls: A list of new DataFrames with each column normalized to its maximum value. Values will be
         in the range -1 to 1.
     """
     # Check for correct data type of df (pandas.DataFrame) to prevent subsequent errors.
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
 
     df_norm_ls = []
     for df in df_ls:
@@ -567,7 +584,7 @@ def norm_cols_each_ls(df_ls):
             max_abs_val = max(abs(df[col].max()), abs(df[col].min()))
             df_norm[col] = df_norm[col] / max_abs_val
         df_norm_ls.append(df_norm)
-            
+
     return df_norm_ls
 
 
@@ -584,8 +601,8 @@ def norm_cols_all_ls(df_ls):
              max_in_all_ls: A list of the maximum values present in all columns in each DataFrame.
     """
     # Check df type (expected: pandas DataFrame) to prevent errors during normalization.
-    ec.check_ls(ls=df_ls)
-    ec.check_dfs(values=df_ls)
+    _ec.check_ls(ls=df_ls)
+    _ec.check_dfs(values=df_ls)
     
     df_norm_ls = []
     max_abs_val_ls = []

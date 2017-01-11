@@ -1,20 +1,32 @@
-# err_check.py
+# _err_check.py
 
-# Module import
+"""
+This module provides functions for error checking to use either for other
+df_tools modules or otherwise.
+
+Functions:
+check_ls, check_eq_ls_len, check_numeric, check_int, check_string, check_bool,
+check_dfs, param_exists_in_set, check_threshold, parent_fn_mod_2step, parent_fn_mod_3step.
+
+Please see the doc strings of individual functions for further information.
+"""
+
 from inspect import *
 import pandas as pd
 import numpy as np
 import sys
 
-__doc__ = "\n-------------------------------------------------------------------------\n" \
-          "This module provides functions for error checking to use either for other\n" \
-          "df_tools modules or otherwise.\n" \
-          "\nFunctions:\n" \
-          "check_ls, check_eq_ls_len, check_numeric, check_int, check_string,\n" \
-          "check_bool, check_dfs, param_exists_in_set, check_threshold,\n" \
-          "parent_fn_mod_2step, parent_fn_mod_3step.\n\n" \
-          "Please see the doc strings of individual functions for further information.\n" \
-          "-------------------------------------------------------------------------\n"
+__all__ = ['check_ls',
+           'check_eq_ls_len',
+           'check_numeric',
+           'check_int',
+           'check_string',
+           'check_bool',
+           'check_dfs',
+           'param_exists_in_set',
+           'check_threshold',
+           'parent_fn_mod_2step',
+           'parent_fn_mod_3step']
 
 
 def check_ls(ls):

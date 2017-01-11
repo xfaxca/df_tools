@@ -1,19 +1,30 @@
 # df_utils.py
 
-# Module import
-import df_tools._err_check as ec
+"""
+This module provide tools for functional manipulation of single pandas
+DataFrames, such as normalization, reindexing, modification of index values,
+column averaging/summing, etc. For functions that handle lists of DataFrames,
+please use df_tools.list_utils.
+
+Functions:
+idx0, avg_cols, avg_rows, drop_cols, top_series_mean, top_series_max,
+top_series_quantile, norm_cols_each, norm_cols_all.
+
+See doc strings of the individual functions for further information.
+"""
+
+import df_tools._err_check as _ec
 import pandas as pd
 
-__doc__ = "\n-------------------------------------------------------------------------\n" \
-          "This module provide tools for functional manipulation of single pandas \n" \
-          "DataFrames, such as normalization, reindexing, modification of index values,\n" \
-          "column averaging/summing, etc. For functions that handle lists of DataFrames,\n" \
-          "please use df_tools.list_utils.\n" \
-          "\nFunctions:\n" \
-          "idx0, avg_cols, avg_rows, drop_cols, top_series_mean, top_series_max,\n" \
-          "top_series_quantile, norm_cols_each, norm_cols_all.\n\n" \
-          "See doc strings of the individual functions for further information.\n" \
-          "-------------------------------------------------------------------------\n"
+__all__ = ['idx0',
+           'avg_cols',
+           'avg_rows',
+           'drop_cols',
+           'top_series_mean',
+           'top_series_max',
+           'top_series_quantile',
+           'norm_cols_each',
+           'norm_cols_all']
 
 
 def idx0(df):
@@ -29,8 +40,8 @@ def idx0(df):
     :return: pandas DataFrame with offset index.
     """
     # Check to make sure index values are numeric and in a pandas DataFrame.
-    ec.check_dfs(values=[df])
-    ec.check_numeric(values=df.index.values)
+    _ec.check_dfs(values=[df])
+    _ec.check_numeric(values=df.index.values)
     df_idx0 = df.copy()
     df_idx0.index = (df.index.values - df.index.values[0])
 
@@ -48,7 +59,7 @@ def avg_cols(df):
         column values in the first column, 'Averages'
     """
     # Check to make sure passed object is a pandas DataFrame
-    ec.check_dfs(values=[df])
+    _ec.check_dfs(values=[df])
 
     df_avgs = pd.DataFrame({'Averages': df.mean(axis=0)},
                            index=df.columns.values)
@@ -65,7 +76,7 @@ def avg_rows(df):
         column values in the first column, Averages.
     """
     # check to make sure the passed object is a pandas DataFrame
-    ec.check_dfs(values=[df])
+    _ec.check_dfs(values=[df])
 
     df_avgs = pd.DataFrame({'Averages': df.mean(axis=1)},
                            index=df.column.values)
@@ -82,9 +93,9 @@ def drop_cols(df, cols2drop=[""]):
     :return:
     """
     # Check data types to prevent errors in column dropping loop.
-    ec.check_ls(ls=cols2drop)
-    ec.check_dfs(values=[df])
-    ec.check_string(values=cols2drop)
+    _ec.check_ls(ls=cols2drop)
+    _ec.check_dfs(values=[df])
+    _ec.check_string(values=cols2drop)
 
     cols_dropped = 0
     for col in cols2drop:
@@ -116,8 +127,8 @@ def top_series_mean(df, n_series=10):
         columns in the original DataFrame.
     """
     # Check input types to prevent errors in subsequent loops.
-    ec.check_dfs(values=[df])
-    ec.check_int(values=[n_series])
+    _ec.check_dfs(values=[df])
+    _ec.check_int(values=[n_series])
 
     # Create list of indices (columns) that contain the n_series highest average values in order
     # to later make the returned df_top DataFrame.
@@ -152,8 +163,8 @@ def top_series_max(df, n_series=10):
         columns in the original DataFrame.
     """
     # Check input types to prevent errors in subsequent loops.
-    ec.check_dfs(values=[df])
-    ec.check_int(values=[n_series])
+    _ec.check_dfs(values=[df])
+    _ec.check_int(values=[n_series])
 
     # Create list of indices (columns) that contain the n_series highest maximum values in order
     # to later make the returned df_top DataFrame.
@@ -186,9 +197,9 @@ def top_series_quantile(df, quant=0.9):
         mean values of the columns.
     """
     # Verify parameter of type pandas.DataFrame, there is a numeric value for quantile, and that quantile is <=1.0.
-    ec.check_dfs(values=[df])
-    ec.check_numeric(values=[quant])
-    ec.check_threshold(values=[quant], thresh=1.0, how='under')
+    _ec.check_dfs(values=[df])
+    _ec.check_numeric(values=[quant])
+    _ec.check_threshold(values=[quant], thresh=1.0, how='under')
     # Take average of original DataFrame for processing and make a 'quant_index_list' to be able to create a new
     # returnable DataFrame from the original using a mask.
     quant_index_list = []
@@ -218,7 +229,7 @@ def norm_cols_each(df):
         -1 to 1.
     """
     # Check for correct data type of df (pandas.DataFrame) to prevent subsequent errors.
-    ec.check_dfs(values=[df])
+    _ec.check_dfs(values=[df])
 
     df_norm = df.copy(deep=True)
     for col in df.axes[1]:
@@ -240,7 +251,7 @@ def norm_cols_all(df):
              max_in_all: The maximum value present in all columns.
     """
     # Check df type (expected: pandas DataFrame) to prevent errors during normalization.
-    ec.check_dfs(values=[df])
+    _ec.check_dfs(values=[df])
 
     max_abs_val = max(abs(df.values.max()), abs(df.values.min()))
     df_norm = df / max_abs_val
