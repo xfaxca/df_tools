@@ -2,7 +2,6 @@
 
 from setuptools import setup, find_packages
 
-
 setup(name='df_tools',
       version='1.1',
       description='Tools for the manipulation of pandas DataFrames',
